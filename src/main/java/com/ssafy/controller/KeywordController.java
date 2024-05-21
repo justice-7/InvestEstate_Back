@@ -14,6 +14,7 @@ public class KeywordController {
 
     @PostMapping("/add")
     public void addKeyword(@RequestBody String keyword) {
+        System.out.println("Hello World");
         keywordService.addKeyword(keyword);
     }
 }
