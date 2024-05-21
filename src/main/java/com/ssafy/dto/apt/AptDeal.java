@@ -2,6 +2,8 @@ package com.ssafy.dto.apt;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class AptDeal {
     private Long aptDealId;
@@ -21,4 +23,5 @@ public class AptDeal {
     private String lng;
     private String dongCode;
     private Long aptId;
+    private List<String> imageUrls;
 }

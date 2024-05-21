@@ -12,6 +12,14 @@ public interface AptDealDao {
     @Options(useGeneratedKeys = true, keyProperty = "aptDealId")
     void insertAptDeal(AptDeal aptDeal);
 
+    @Insert("<script>" +
+            "INSERT INTO apt_images (apt_deal_id, image_url) VALUES " +
+            "<foreach collection='imageUrls' item='imageUrl' separator=','>" +
+            "(#{aptDealId}, #{imageUrl})" +
+            "</foreach>" +
+            "</script>")
+    void insertAptImages(@Param("aptDealId") Long aptDealId, @Param("imageUrls") List<String> imageUrls);
+
     @Update("UPDATE apt_deal SET price = #{price}, built_year = #{builtYear}, year = #{year}, dong_name = #{dongName}, " +
             "month = #{month}, day = #{day}, area = #{area}, jibun = #{jibun}, region_code = #{regionCode}, " +
             "floor = #{floor}, name = #{name}, lat = #{lat}, lng = #{lng}, dong_code = #{dongCode}, apt_id = #{aptId} " +

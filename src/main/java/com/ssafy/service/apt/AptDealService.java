@@ -25,6 +25,10 @@ public class AptDealService {
         Long userId = SecurityUtil.getCurrentUserId();
         aptDeal.setUserId(userId);
         aptDealDao.insertAptDeal(aptDeal);
+        // 이미지 URL 저장
+        if (aptDeal.getImageUrls() != null && !aptDeal.getImageUrls().isEmpty()) {
+            aptDealDao.insertAptImages(aptDeal.getAptDealId(), aptDeal.getImageUrls());
+        }
         // aptDealId가 생성된 후 알림을 설정
         checkAndNotifyUsers(aptDeal);
     }
