@@ -2,6 +2,7 @@ package com.ssafy.service.auth;
 
 import com.ssafy.config.JwtTokenProvider;
 import com.ssafy.dao.realestate.RealEstateDao;
+import com.ssafy.dao.realestate.UserRealEstateDao;
 import com.ssafy.dao.user.UserDao;
 import com.ssafy.dto.auth.LoginRequest;
 import com.ssafy.dto.auth.RealtorSignUpRequest;
@@ -23,7 +24,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDao userDao;
     private final RealEstateDao realEstateDao;
-    private final com.ssafy.dao.userrealestate.UserRealEstateDao userRealEstateDao;
+    private final UserRealEstateDao userRealEstateDao;
 
     public TokenResponse login(LoginRequest loginRequest) {
         User user = userDao.findByEmail(loginRequest.getEmail());
