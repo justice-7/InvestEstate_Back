@@ -1,14 +1,13 @@
-package com.ssafy.model.dto;
+package com.ssafy.dto.keyword;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Keyword {
-    private int id;
+    private int keywordId;
     private String keyword;
-    private int userId;
 }
