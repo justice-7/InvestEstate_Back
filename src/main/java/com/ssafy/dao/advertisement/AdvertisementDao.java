@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface AdvertisementDao {
-
     @Insert("INSERT INTO advertisement (title, image_url, link) VALUES (#{title}, #{imageUrl}, #{link})")
     void saveAdvertisement(AdvertisementRequest advertisementRequest);
 }

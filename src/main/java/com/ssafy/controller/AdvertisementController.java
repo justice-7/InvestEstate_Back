@@ -14,8 +14,8 @@ public class AdvertisementController {
     private final AdvertisementService advertisementService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createAdvertisement(@RequestBody AdvertisementRequest advertisementRequest) {
+        System.out.println("Hello");
         advertisementService.createAdvertisement(advertisementRequest);
         return ResponseEntity.status(201).build();
     }
