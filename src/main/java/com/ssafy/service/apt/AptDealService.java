@@ -1,5 +1,6 @@
 package com.ssafy.service.apt;
 
+
 import com.ssafy.dao.apt.AptDealDao;
 import com.ssafy.dao.keyword.KeywordDao;
 import com.ssafy.dao.keyword.KeywordNotificationDao;

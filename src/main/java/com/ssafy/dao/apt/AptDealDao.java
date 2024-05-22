@@ -5,6 +5,7 @@ import com.ssafy.dto.apt.AptInfo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+
 @Mapper
 public interface AptDealDao {
     @Insert("INSERT INTO apt_deal (price, built_year, year, dong_name, month, day, area, jibun, region_code, floor, name, lat, lng, dong_code, apt_id, user_id) " +
@@ -99,14 +100,14 @@ public interface AptDealDao {
                                  @Param("area") Integer area,
                                  @Param("searchText") String searchText);
 
-    @Select("SELECT ad.apt_deal_id, ad.name, ad.price, CONCAT(ad.year, '-', ad.month, '-', ad.day) as date FROM apt_deal ad WHERE apt_id = #{aptId} ORDER BY ad.year DESC, ad.month DESC, ad.day DESC")
+    @Select("SELECT ad.apt_deal_id, ad.name, ad.price, ad.year, ad.month, ad.day FROM apt_deal ad WHERE apt_id = #{aptId} ORDER BY ad.year DESC, ad.month DESC, ad.day DESC")
     @Results({
             @Result(column = "apt_deal_id", property = "aptDealId"),
             @Result(column = "name", property = "name"),
             @Result(column = "price", property = "price"),
-            @Result(column = "date", property = "date")
+            @Result(column = "year", property = "year"),
+            @Result(column = "month", property = "month"),
+            @Result(column = "day", property = "day")
     })
     List<AptDeal> findAptDealsByAptId(@Param("aptId") Integer aptId);
-
 }
-

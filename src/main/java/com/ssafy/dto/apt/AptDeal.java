@@ -1,7 +1,6 @@
 package com.ssafy.dto.apt;
 
 import lombok.Data;
-
 import java.util.List;
 
 @Data
@@ -24,4 +23,8 @@ public class AptDeal {
     private String dongCode;
     private Long aptId;
     private List<String> imageUrls;
+
+    public String getDate() {
+        return year + "-" + month + "-" + day;
+    }
 }
