@@ -10,7 +10,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
     private static final String SECRET_KEY = "your-secret-key";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L; // 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L; // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
 
     public String generateAccessToken(Long userId, String role) {

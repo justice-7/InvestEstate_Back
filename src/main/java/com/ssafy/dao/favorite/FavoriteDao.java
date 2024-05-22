@@ -1,6 +1,8 @@
 package com.ssafy.dao.favorite;
 
 import com.ssafy.dto.favorite.Favorite;
+import com.ssafy.dto.apt.AptDeal;
+import com.ssafy.handler.StringListTypeHandler;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -13,13 +15,15 @@ public interface FavoriteDao {
     @Insert("INSERT INTO favorites (user_id, apt_deal_id) VALUES (#{userId}, #{aptDealId})")
     void addFavorite(@Param("userId") Long userId, @Param("aptDealId") Long aptDealId);
 
-    @Delete("DELETE FROM favorites WHERE user_id = #{userId} AND apt_deal_id = #{aptDealId}")
+    @Delete("DELETE FROM favorites WHERE user_id = #{userId} AND apt_deal_id = #{aptDealId})")
     void removeFavorite(@Param("userId") Long userId, @Param("aptDealId") Long aptDealId);
 
-    @Select("SELECT f.user_id, f.apt_deal_id, a.* " +
+    @Select("SELECT f.user_id, f.apt_deal_id, a.*, GROUP_CONCAT(ai.image_url) AS imageUrls " +
             "FROM favorites f " +
             "JOIN apt_deal a ON f.apt_deal_id = a.apt_deal_id " +
-            "WHERE f.user_id = #{userId}")
+            "LEFT JOIN apt_images ai ON a.apt_deal_id = ai.apt_deal_id " +
+            "WHERE f.user_id = #{userId} " +
+            "GROUP BY f.user_id, f.apt_deal_id, a.apt_deal_id")
     @Results({
             @Result(property = "userId", column = "user_id"),
             @Result(property = "aptDealId", column = "apt_deal_id"),
@@ -39,9 +43,13 @@ public interface FavoriteDao {
             @Result(property = "aptDeal.lng", column = "lng"),
             @Result(property = "aptDeal.dongCode", column = "dong_code"),
             @Result(property = "aptDeal.aptId", column = "apt_id"),
-            @Result(property = "aptDeal.userId", column = "user_id")
+            @Result(property = "aptDeal.imageUrls", column = "imageUrls", typeHandler = StringListTypeHandler.class)
     })
     List<Favorite> findFavoritesByUserId(@Param("userId") Long userId);
+
+    @Select("SELECT image_url FROM apt_images WHERE apt_deal_id = #{aptDealId}")
+    @ResultType(String.class)
+    List<String> findImagesByAptDealId(@Param("aptDealId") Long aptDealId);
 
     @Select("SELECT COUNT(*) FROM favorites WHERE user_id = #{userId} AND apt_deal_id = #{aptDealId}")
     int isFavorite(@Param("userId") Long userId, @Param("aptDealId") Long aptDealId);
