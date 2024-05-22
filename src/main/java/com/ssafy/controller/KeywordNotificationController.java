@@ -11,6 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/notifications")
+@CrossOrigin(origins = "*")
 public class KeywordNotificationController {
     private final KeywordNotificationService keywordNotificationService;
 

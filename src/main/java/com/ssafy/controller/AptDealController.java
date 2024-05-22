@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/apt-deal")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class AptDealController {
     private final AptDealService aptDealService;
 

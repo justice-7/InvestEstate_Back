@@ -3,6 +3,7 @@ package com.ssafy.dao.user;
 import com.ssafy.dto.auth.RealtorSignUpRequest;
 import com.ssafy.dto.auth.SignUpRequest;
 import com.ssafy.dto.user.User;
+import com.ssafy.dto.user.UserInfoResponse;
 import com.ssafy.dto.user.UserUpdateRequest;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,14 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface UserDao {
+
+    @Select("SELECT user_id, name, email FROM users WHERE user_id = #{userId}")
+    @Results({
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "name", column = "name"),
+            @Result(property = "email", column = "email"),
+    })
+    UserInfoResponse findUserInfoById(Long userId);
 
     @Select("SELECT * FROM users WHERE email = #{email}")
     @Results({

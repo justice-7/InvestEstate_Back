@@ -6,11 +6,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class KeywordService {
 
     private final KeywordDao keywordDao;
+
+    public List<String> getUserKeywords(Long userId) {
+        return keywordDao.findKeywordsByUserId(userId);
+    }
 
     @Transactional
     public void setUserKeyword(Long userId, String keywordStr) {

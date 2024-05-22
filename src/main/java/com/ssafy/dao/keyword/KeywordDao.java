@@ -36,4 +36,7 @@ public interface KeywordDao {
 
     @Select("SELECT user_id FROM user_keywords WHERE keyword_id = #{keywordId}")
     List<Long> findUserIdsByKeywordId(@Param("keywordId") Integer keywordId);
+
+    @Select("SELECT k.keyword FROM keywords k INNER JOIN user_keywords uk ON k.keyword_id = uk.keyword_id WHERE uk.user_id = #{userId}")
+    List<String> findKeywordsByUserId(@Param("userId") Long userId);
 }

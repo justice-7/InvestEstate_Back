@@ -28,11 +28,10 @@ public class AuthService {
 
     public TokenResponse login(LoginRequest loginRequest) {
         User user = userDao.findByEmail(loginRequest.getEmail());
-        System.out.println(user);
         if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
             String accessToken = jwtTokenProvider.generateAccessToken(user.getUserId(), user.getRole());
             String refreshToken = jwtTokenProvider.generateRefreshToken(user.getUserId());
-            return new TokenResponse(accessToken, refreshToken);
+            return new TokenResponse(accessToken, refreshToken, user.getRole());
         }
         return null;
     }
@@ -71,7 +70,7 @@ public class AuthService {
         String accessToken = jwtTokenProvider.generateAccessToken(userId, signUpRequest.getRole());
         String refreshToken = jwtTokenProvider.generateRefreshToken(userId);
 
-        return new TokenResponse(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken, signUpRequest.getRole());
     }
 
 
