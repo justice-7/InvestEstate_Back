@@ -1,6 +1,7 @@
 package com.ssafy.controller;
 
 import com.ssafy.dto.apt.AptDeal;
+import com.ssafy.dto.apt.AptInfo;
 import com.ssafy.service.apt.AptDealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,13 +40,19 @@ public class AptDealController {
         return ResponseEntity.ok(aptDeals);
     }
 
-    @GetMapping
-    public ResponseEntity<List<AptDeal>> searchAptDeals(
+    @GetMapping("/search")
+    public ResponseEntity<List<AptInfo>> searchAptInfos(
             @RequestParam(value = "priceMin", required = false) Integer priceMin,
             @RequestParam(value = "priceMax", required = false) Integer priceMax,
             @RequestParam(value = "area", required = false) Integer area,
             @RequestParam(value = "searchText", required = false) String searchText) {
-        List<AptDeal> aptDeals = aptDealService.searchAptDeals(priceMin, priceMax, area, searchText);
+        List<AptInfo> aptInfos = aptDealService.searchAptInfos(priceMin, priceMax, area, searchText);
+        return ResponseEntity.ok(aptInfos);
+    }
+
+    @GetMapping("/related/{aptId}")
+    public ResponseEntity<List<AptDeal>> findAptDealsByAptId(@PathVariable Integer aptId) {
+        List<AptDeal> aptDeals = aptDealService.findAptDealsByAptId(aptId);
         return ResponseEntity.ok(aptDeals);
     }
 }

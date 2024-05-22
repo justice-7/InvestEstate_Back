@@ -1,10 +1,10 @@
 package com.ssafy.dao.apt;
 
 import com.ssafy.dto.apt.AptDeal;
+import com.ssafy.dto.apt.AptInfo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
-
 @Mapper
 public interface AptDealDao {
     @Insert("INSERT INTO apt_deal (price, built_year, year, dong_name, month, day, area, jibun, region_code, floor, name, lat, lng, dong_code, apt_id, user_id) " +
@@ -73,39 +73,40 @@ public interface AptDealDao {
     List<AptDeal> findByUserId(Long userId);
 
     @Select("<script>" +
-            "SELECT * FROM apt_deal WHERE 1=1" +
-            "<if test='priceMin != null'> AND price &gt;= #{priceMin}</if>" +
-            "<if test='priceMax != null'> AND price &lt;= #{priceMax}</if>" +
-            "<if test='area != null'>" +
-            " AND area &gt;= #{area} AND area &lt;= #{area + 10}" +
-            "</if>" +
+            "SELECT ai.* FROM apt_info ai " +
+            "WHERE 1=1 " +
+            "<if test='priceMin != null'> AND EXISTS (SELECT 1 FROM apt_deal ad WHERE ad.apt_id = ai.apt_id AND ad.price &gt;= #{priceMin})</if>" +
+            "<if test='priceMax != null'> AND EXISTS (SELECT 1 FROM apt_deal ad WHERE ad.apt_id = ai.apt_id AND ad.price &lt;= #{priceMax})</if>" +
+            "<if test='area != null'> AND ai.area &gt;= #{area} AND ai.area &lt;= #{area + 10}</if>" +
             "<if test='searchText != null'>" +
-            " AND (dong_name LIKE CONCAT('%', #{searchText}, '%')" +
-            " OR name LIKE CONCAT('%', #{searchText}, '%')" +
-            " OR jibun LIKE CONCAT('%', #{searchText}, '%'))" +
+            " AND (ai.dong_name LIKE CONCAT('%', #{searchText}, '%')" +
+            " OR ai.name LIKE CONCAT('%', #{searchText}, '%')" +
+            " OR ai.jibun LIKE CONCAT('%', #{searchText}, '%'))" +
             "</if>" +
             "</script>")
     @Results({
-            @Result(column = "apt_deal_id", property = "aptDealId"),
-            @Result(column = "price", property = "price"),
+            @Result(column = "apt_id", property = "aptId"),
             @Result(column = "built_year", property = "builtYear"),
-            @Result(column = "year", property = "year"),
+            @Result(column = "dong_code", property = "dongCode"),
             @Result(column = "dong_name", property = "dongName"),
-            @Result(column = "month", property = "month"),
-            @Result(column = "day", property = "day"),
-            @Result(column = "area", property = "area"),
             @Result(column = "jibun", property = "jibun"),
-            @Result(column = "region_code", property = "regionCode"),
-            @Result(column = "floor", property = "floor"),
             @Result(column = "name", property = "name"),
             @Result(column = "lat", property = "lat"),
-            @Result(column = "lng", property = "lng"),
-            @Result(column = "dong_code", property = "dongCode"),
-            @Result(column = "apt_id", property = "aptId"),
-            @Result(column = "user_id", property = "userId")
+            @Result(column = "lng", property = "lng")
     })
-    List<AptDeal> searchAptDeals(@Param("priceMin") Integer priceMin,
+    List<AptInfo> searchAptInfos(@Param("priceMin") Integer priceMin,
                                  @Param("priceMax") Integer priceMax,
                                  @Param("area") Integer area,
                                  @Param("searchText") String searchText);
+
+    @Select("SELECT ad.apt_deal_id, ad.name, ad.price, CONCAT(ad.year, '-', ad.month, '-', ad.day) as date FROM apt_deal ad WHERE apt_id = #{aptId} ORDER BY ad.year DESC, ad.month DESC, ad.day DESC")
+    @Results({
+            @Result(column = "apt_deal_id", property = "aptDealId"),
+            @Result(column = "name", property = "name"),
+            @Result(column = "price", property = "price"),
+            @Result(column = "date", property = "date")
+    })
+    List<AptDeal> findAptDealsByAptId(@Param("aptId") Integer aptId);
+
 }
+

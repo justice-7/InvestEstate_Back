@@ -4,6 +4,7 @@ import com.ssafy.dao.apt.AptDealDao;
 import com.ssafy.dao.keyword.KeywordDao;
 import com.ssafy.dao.keyword.KeywordNotificationDao;
 import com.ssafy.dto.apt.AptDeal;
+import com.ssafy.dto.apt.AptInfo;
 import com.ssafy.dto.keyword.Keyword;
 import com.ssafy.dto.keyword.KeywordNotification;
 import com.ssafy.util.SecurityUtil;
@@ -69,7 +70,11 @@ public class AptDealService {
         return aptDealDao.findByUserId(userId);
     }
 
-    public List<AptDeal> searchAptDeals(Integer priceMin, Integer priceMax, Integer area, String searchText) {
-        return aptDealDao.searchAptDeals(priceMin, priceMax, area, searchText);
+    public List<AptInfo> searchAptInfos(Integer priceMin, Integer priceMax, Integer area, String searchText) {
+        return aptDealDao.searchAptInfos(priceMin, priceMax, area, searchText);
+    }
+
+    public List<AptDeal> findAptDealsByAptId(Integer aptId) {
+        return aptDealDao.findAptDealsByAptId(aptId);
     }
 }
