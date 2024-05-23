@@ -113,7 +113,16 @@ public interface AptDealDao {
                                  @Param("area") Integer area,
                                  @Param("searchText") String searchText);
 
-    @Select("SELECT ad.apt_deal_id, ad.name, ad.price, ad.year, ad.month, ad.day FROM apt_deal ad WHERE apt_id = #{aptId} ORDER BY ad.year DESC, ad.month DESC, ad.day DESC")
+    @Select("SELECT ad.apt_deal_id, ad.name, ad.price, ad.year, ad.month, ad.day " +
+            "FROM ( " +
+            " SELECT MIN(ad.apt_deal_id) AS apt_deal_id " +
+            " FROM apt_deal ad " +
+            " WHERE apt_id = #{aptId} " +
+            " GROUP BY ad.year, ad.month, ad.day, ad.name, ad.price " +
+            ") AS sub " +
+            "JOIN apt_deal ad ON ad.apt_deal_id = sub.apt_deal_id " +
+            "ORDER BY ad.year DESC, ad.month DESC, ad.day DESC;")
+
     @Results({
             @Result(column = "apt_deal_id", property = "aptDealId"),
             @Result(column = "name", property = "name"),

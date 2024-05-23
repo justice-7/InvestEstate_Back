@@ -40,9 +40,9 @@ public class InquiryService {
 
     private void sendEmailToRealtor(InquiryRequest inquiryRequest) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("ojs835@naver.com");
+        message.setTo("wjddml0702@naver.com");
         message.setSubject("새로운 부동산 문의가 등록되었습니다.");
-        message.setText("문의 내용: " + inquiryRequest.getContent() + "\n매물 ID: " + inquiryRequest.getAptId());
+        message.setText("문의 내역입니다.\n\n"+ "매물 ID: " + inquiryRequest.getAptId()+"\n문의 내용: " + inquiryRequest.getContent());
         mailSender.send(message);
     }
 }
