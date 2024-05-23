@@ -22,6 +22,7 @@ public class AptDeal {
     private String lng;
     private String dongCode;
     private Long aptId;
+    private String content; // 추가됨
     private List<String> imageUrls;
 
     public String getDate() {

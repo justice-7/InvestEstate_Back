@@ -20,9 +20,10 @@ public class AptDealController {
 
     @PostMapping
     @PreAuthorize("hasRole('REA')")
-    public ResponseEntity<Void> registerAptDeal(@RequestBody AptDeal aptDeal) {
-        aptDealService.registerAptDeal(aptDeal);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<AptDeal> registerAptDeal(@RequestBody AptDeal aptDeal) {
+        System.out.println(aptDeal);
+        AptDeal registeredAptDeal = aptDealService.registerAptDeal(aptDeal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registeredAptDeal);
     }
 
     @PutMapping("/{aptDealId}")
@@ -54,5 +55,12 @@ public class AptDealController {
     public ResponseEntity<List<AptDeal>> findAptDealsByAptId(@PathVariable Integer aptId) {
         List<AptDeal> aptDeals = aptDealService.findAptDealsByAptId(aptId);
         return ResponseEntity.ok(aptDeals);
+    }
+
+    @DeleteMapping("/{aptDealId}")
+    @PreAuthorize("hasRole('REA')")
+    public ResponseEntity<Void> deleteAptDeal(@PathVariable Long aptDealId) {
+        aptDealService.deleteAptDeal(aptDealId);
+        return ResponseEntity.noContent().build();
     }
 }

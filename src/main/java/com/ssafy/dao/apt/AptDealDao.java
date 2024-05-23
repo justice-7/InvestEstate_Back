@@ -8,8 +8,14 @@ import java.util.List;
 
 @Mapper
 public interface AptDealDao {
-    @Insert("INSERT INTO apt_deal (price, built_year, year, dong_name, month, day, area, jibun, region_code, floor, name, lat, lng, dong_code, apt_id, user_id) " +
-            "VALUES (#{price}, #{builtYear}, #{year}, #{dongName}, #{month}, #{day}, #{area}, #{jibun}, #{regionCode}, #{floor}, #{name}, #{lat}, #{lng}, #{dongCode}, #{aptId}, #{userId})")
+    @Delete("DELETE FROM apt_deal WHERE apt_deal_id = #{aptDealId}")
+    void deleteAptDeal(Long aptDealId);
+
+    @Delete("DELETE FROM apt_images WHERE apt_deal_id = #{aptDealId}")
+    void deleteAptImages(Long aptDealId);
+
+    @Insert("INSERT INTO apt_deal (price, built_year, year, dong_name, month, day, area, jibun, region_code, floor, name, lat, lng, dong_code, apt_id, user_id, content) " +
+            "VALUES (#{price}, #{builtYear}, #{year}, #{dongName}, #{month}, #{day}, #{area}, #{jibun}, #{regionCode}, #{floor}, #{name}, #{lat}, #{lng}, #{dongCode}, #{aptId}, #{userId}, #{content})")
     @Options(useGeneratedKeys = true, keyProperty = "aptDealId")
     void insertAptDeal(AptDeal aptDeal);
 
@@ -23,7 +29,7 @@ public interface AptDealDao {
 
     @Update("UPDATE apt_deal SET price = #{price}, built_year = #{builtYear}, year = #{year}, dong_name = #{dongName}, " +
             "month = #{month}, day = #{day}, area = #{area}, jibun = #{jibun}, region_code = #{regionCode}, " +
-            "floor = #{floor}, name = #{name}, lat = #{lat}, lng = #{lng}, dong_code = #{dongCode}, apt_id = #{aptId} " +
+            "floor = #{floor}, name = #{name}, lat = #{lat}, lng = #{lng}, dong_code = #{dongCode}, apt_id = #{aptId}, content = #{content} " +
             "WHERE apt_deal_id = #{aptDealId} AND user_id = #{userId}")
     void updateAptDeal(AptDeal aptDeal);
 
@@ -45,9 +51,14 @@ public interface AptDealDao {
             @Result(property = "lng", column = "lng"),
             @Result(property = "dongCode", column = "dong_code"),
             @Result(property = "aptId", column = "apt_id"),
-            @Result(property = "userId", column = "user_id")
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "content", column = "content"),
+            @Result(property = "imageUrls", column = "apt_deal_id", many = @Many(select = "findImagesByAptDealId"))
     })
     AptDeal findById(Long aptDealId);
+
+    @Select("SELECT image_url FROM apt_images WHERE apt_deal_id = #{aptDealId}")
+    List<String> findImagesByAptDealId(Long aptDealId);
 
     @Select("SELECT ad.* " +
             "FROM apt_deal ad " +
@@ -69,7 +80,9 @@ public interface AptDealDao {
             @Result(property = "lng", column = "lng"),
             @Result(property = "dongCode", column = "dong_code"),
             @Result(property = "aptId", column = "apt_id"),
-            @Result(property = "userId", column = "user_id")
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "content", column = "content"),
+            @Result(property = "imageUrls", column = "apt_deal_id", many = @Many(select = "findImagesByAptDealId"))
     })
     List<AptDeal> findByUserId(Long userId);
 
@@ -107,7 +120,8 @@ public interface AptDealDao {
             @Result(column = "price", property = "price"),
             @Result(column = "year", property = "year"),
             @Result(column = "month", property = "month"),
-            @Result(column = "day", property = "day")
+            @Result(column = "day", property = "day"),
+            @Result(property = "imageUrls", column = "apt_deal_id", many = @Many(select = "findImagesByAptDealId"))
     })
     List<AptDeal> findAptDealsByAptId(@Param("aptId") Integer aptId);
 }

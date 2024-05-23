@@ -1,7 +1,7 @@
 package com.ssafy.service.apt;
 
-
 import com.ssafy.dao.apt.AptDealDao;
+import com.ssafy.dao.apt.AptInfoDao;
 import com.ssafy.dao.keyword.KeywordDao;
 import com.ssafy.dao.keyword.KeywordNotificationDao;
 import com.ssafy.dto.apt.AptDeal;
@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,11 +22,32 @@ public class AptDealService {
     private final AptDealDao aptDealDao;
     private final KeywordDao keywordDao;
     private final KeywordNotificationDao keywordNotificationDao;
+    private final AptInfoDao aptInfoDao;
 
     @Transactional
-    public void registerAptDeal(AptDeal aptDeal) {
+    public AptDeal registerAptDeal(AptDeal aptDeal) {
         Long userId = SecurityUtil.getCurrentUserId();
         aptDeal.setUserId(userId);
+
+        // 현재 날짜 설정
+        LocalDate currentDate = LocalDate.now();
+        aptDeal.setYear(String.valueOf(currentDate.getYear()));
+        aptDeal.setMonth(String.format("%02d", currentDate.getMonthValue()));
+        aptDeal.setDay(String.format("%02d", currentDate.getDayOfMonth()));
+
+        // aptId로 AptInfo 정보를 가져와서 AptDeal에 설정
+        AptInfo aptInfo = aptInfoDao.findById(aptDeal.getAptId());
+
+        if (aptInfo != null) {
+            aptDeal.setBuiltYear(String.valueOf(aptInfo.getBuiltYear()));
+            aptDeal.setDongName(aptInfo.getDongName());
+            aptDeal.setJibun(aptInfo.getJibun());
+            aptDeal.setName(aptInfo.getName());
+            aptDeal.setLat(String.valueOf(aptInfo.getLat()));
+            aptDeal.setLng(String.valueOf(aptInfo.getLng()));
+            aptDeal.setDongCode(aptInfo.getDongCode());
+        }
+
         aptDealDao.insertAptDeal(aptDeal);
         // 이미지 URL 저장
         if (aptDeal.getImageUrls() != null && !aptDeal.getImageUrls().isEmpty()) {
@@ -33,17 +55,17 @@ public class AptDealService {
         }
         // aptDealId가 생성된 후 알림을 설정
         checkAndNotifyUsers(aptDeal);
-    }
 
+        // 등록된 AptDeal 객체 반환
+        return aptDealDao.findById(aptDeal.getAptDealId());
+    }
 
     private void checkAndNotifyUsers(AptDeal aptDeal) {
         List<Keyword> keywords = keywordDao.findAllKeywords();
         for (Keyword keyword : keywords) {
             if ((aptDeal.getDongName() != null && aptDeal.getDongName().contains(keyword.getKeyword())) ||
                     (aptDeal.getName() != null && aptDeal.getName().contains(keyword.getKeyword()))) {
-                System.out.println(keyword.getKeywordId());
                 List<Long> userIds = keywordDao.findUserIdsByKeywordId(keyword.getKeywordId());
-                System.out.println(userIds);
                 for (Long userId : userIds) {
                     KeywordNotification notification = new KeywordNotification();
                     notification.setUserId(userId);
@@ -77,5 +99,13 @@ public class AptDealService {
 
     public List<AptDeal> findAptDealsByAptId(Integer aptId) {
         return aptDealDao.findAptDealsByAptId(aptId);
+    }
+
+    @Transactional
+    public void deleteAptDeal(Long aptDealId) {
+        // 이미지 URL 삭제
+        aptDealDao.deleteAptImages(aptDealId);
+        // 매물 삭제
+        aptDealDao.deleteAptDeal(aptDealId);
     }
 }
