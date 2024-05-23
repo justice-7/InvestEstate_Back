@@ -15,21 +15,26 @@ public class FavoriteService {
     private final FavoriteDao favoriteDao;
 
     @Transactional
-    public void addFavorite(Long aptDealId) {
+    public void addFavorite(Long aptId) {
         Long userId = SecurityUtil.getCurrentUserId();
-        if (favoriteDao.isFavorite(userId, aptDealId) == 0) {
-            favoriteDao.addFavorite(userId, aptDealId);
+        if (favoriteDao.isFavorite(userId, aptId) == 0) {
+            favoriteDao.addFavorite(userId, aptId);
         }
     }
 
     @Transactional
-    public void removeFavorite(Long aptDealId) {
+    public void removeFavorite(Long aptId) {
         Long userId = SecurityUtil.getCurrentUserId();
-        favoriteDao.removeFavorite(userId, aptDealId);
+        favoriteDao.removeFavorite(userId, aptId);
     }
 
     public List<Favorite> getFavorites() {
         Long userId = SecurityUtil.getCurrentUserId();
         return favoriteDao.findFavoritesByUserId(userId);
+    }
+
+    public boolean isFavorite(Long aptId) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        return favoriteDao.isFavorite(userId, aptId) > 0;
     }
 }

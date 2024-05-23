@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -71,6 +72,8 @@ public class AptDealService {
                     notification.setUserId(userId);
                     notification.setKeywordId(keyword.getKeywordId());
                     notification.setAptDealId(aptDeal.getAptDealId());
+                    notification.setNotificationDate(LocalDateTime.now().toString());  // 현재 날짜 및 시간 설정
+                    notification.setRead(false);
                     keywordNotificationDao.insertKeywordNotification(notification);
                 }
             }

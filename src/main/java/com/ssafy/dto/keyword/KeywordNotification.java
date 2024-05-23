@@ -12,6 +12,6 @@ public class KeywordNotification {
     private Long userId;
     private Integer keywordId;
     private Long aptDealId;
-    private String notificationDate;
+    private String notificationDate;  // 추가된 필드
     private boolean isRead;
 }

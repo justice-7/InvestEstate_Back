@@ -3,6 +3,7 @@ package com.ssafy.controller;
 import com.ssafy.dto.inquiry.InquiryRequest;
 import com.ssafy.dto.inquiry.InquiryResponse;
 import com.ssafy.service.inquiry.InquiryService;
+import com.ssafy.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,9 @@ public class InquiryController {
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> createInquiry(@RequestBody InquiryRequest inquiryRequest) {
+        if (inquiryRequest.getAptId() == null || inquiryRequest.getContent() == null) {
+            return ResponseEntity.badRequest().build();
+        }
         inquiryService.createInquiry(inquiryRequest);
         return ResponseEntity.ok().build();
     }
@@ -28,7 +32,8 @@ public class InquiryController {
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<InquiryResponse>> getUserInquiries() {
-        List<InquiryResponse> inquiries = inquiryService.getInquiriesForUser();
+        Long userId = SecurityUtil.getCurrentUserId();
+        List<InquiryResponse> inquiries = inquiryService.getInquiriesForUser(userId);
         return ResponseEntity.ok(inquiries);
     }
 

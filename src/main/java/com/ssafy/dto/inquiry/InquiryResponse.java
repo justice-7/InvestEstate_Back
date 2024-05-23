@@ -6,8 +6,8 @@ import lombok.Data;
 public class InquiryResponse {
     private Long inquiryId;
     private Long userId;
-    private Long aptDealId;
-    private String message;
+    private Long aptId;
+    private String content;
     private String status;
     private boolean isRead;
 }

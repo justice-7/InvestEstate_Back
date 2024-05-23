@@ -14,18 +14,23 @@ import java.util.List;
 public class FavoriteController {
     private final FavoriteService favoriteService;
 
-    @PostMapping("/{aptDealId}")
-    public void addFavorite(@PathVariable Long aptDealId) {
-        favoriteService.addFavorite(aptDealId);
+    @PostMapping("/{aptId}")
+    public void addFavorite(@PathVariable Long aptId) {
+        favoriteService.addFavorite(aptId);
     }
 
-    @DeleteMapping("/{aptDealId}")
-    public void removeFavorite(@PathVariable Long aptDealId) {
-        favoriteService.removeFavorite(aptDealId);
+    @DeleteMapping("/{aptId}")
+    public void removeFavorite(@PathVariable Long aptId) {
+        favoriteService.removeFavorite(aptId);
     }
 
     @GetMapping
     public List<Favorite> getFavorites() {
         return favoriteService.getFavorites();
+    }
+
+    @GetMapping("/{aptId}")
+    public boolean checkIfFavorite(@PathVariable Long aptId) {
+        return favoriteService.isFavorite(aptId);
     }
 }
